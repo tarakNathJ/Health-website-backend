@@ -103,6 +103,7 @@ export const getUserProfile = async (req, res) => {
                 isAdmin: user.isAdmin,
                 profileImage: user.profileImage,
                 tier: user.tier,
+                createdAt: user.createdAt
             });
         } else {
             res.status(404).json({ message: 'User not found' });
@@ -140,6 +141,7 @@ export const updateUserProfile = async (req, res) => {
                 isAdmin: updatedUser.isAdmin,
                 profileImage: updatedUser.profileImage,
                 tier: updatedUser.tier,
+                createdAt: updatedUser.createdAt,
                 token: generateToken(updatedUser._id),
             });
         } else {
