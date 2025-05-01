@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import config from '../src/config/config.js';
 import connectDB from '../src/config/db.js';
 import authRoutes from '../src/routes/authRoutes.js';
 import passwordRoutes from '../src/routes/passwordRoutes.js';
@@ -10,27 +9,30 @@ import passwordRoutes from '../src/routes/passwordRoutes.js';
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
+// Initialize Express app
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Logging middleware
-if (config.nodeEnv === 'development') {
-    app.use(morgan('dev'));
-}
+// Logging middleware in development
+app.use(morgan('dev'));
+
+// Connect to MongoDB
+connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/password', passwordRoutes);
 
-// Base route
+// Base route for API health check
 app.get('/', (req, res) => {
-    res.send('HealthConnect API is running...');
+    res.status(200).send('HealthConnect API is running...');
+});
+
+app.get('/api', (req, res) => {
+    res.status(200).send('HealthConnect API is running...');
 });
 
 // Error handling middleware
@@ -39,9 +41,16 @@ app.use((err, req, res, next) => {
     res.status(statusCode);
     res.json({
         message: err.message,
-        stack: config.nodeEnv === 'production' ? null : err.stack,
+        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
     });
 });
 
-// Export as serverless function for Vercel
+// Handle 404 errors for any unmatched routes
+app.use('*', (req, res) => {
+    res.status(404).json({
+        message: 'Route not found'
+    });
+});
+
+// Export the Express API
 export default app; 
