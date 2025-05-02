@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import bcrypt from 'bcryptjs';
 
 /**
  * @description Register a new user
@@ -200,5 +201,44 @@ export const updateUserTier = async (req, res) => {
     } catch (error) {
         console.error('[TIER UPDATE] Error:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+/**
+ * @description Delete user account
+ * @route DELETE /api/auth/account
+ * @access Private
+ */
+export const deleteUserAccount = async (req, res) => {
+    try {
+        const { password } = req.body;
+
+        // Check if password was provided
+        if (!password) {
+            return res.status(400).json({ message: 'Password is required to delete account' });
+        }
+
+        // Find the user by ID
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verify password
+        const isMatch = await user.matchPassword(password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Password is incorrect' });
+        }
+
+        // Delete the user
+        await User.findByIdAndDelete(req.user._id);
+
+        // Send success response
+        res.status(200).json({ success: true, message: 'Account successfully deleted' });
+    } catch (error) {
+        console.error('Error in deleteUserAccount:', error);
+        res.status(500).json({ message: 'Server error during account deletion' });
     }
 }; 
