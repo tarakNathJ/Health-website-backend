@@ -5,7 +5,8 @@ import {
     loginUser,
     getUserProfile,
     updateUserProfile,
-    updateUserTier
+    updateUserTier,
+    deleteUserAccount
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -51,6 +52,11 @@ router.put('/profile', protect, updateUserProfile);
 // @access  Private
 router.put('/tier', protect, updateUserTier);
 
+// @route   DELETE /api/auth/account
+// @desc    Delete user account
+// @access  Private
+router.delete('/account', protect, deleteUserAccount);
+
 // @route   PUT /api/auth/tier-debug
 // @desc    Debug endpoint for tier updates
 // @access  Private
@@ -59,14 +65,14 @@ router.put('/tier-debug', protect, (req, res) => {
         console.log('DEBUG - Tier update request received:');
         console.log('User:', req.user);
         console.log('Request body:', req.body);
-        
+
         // Validate tier value
         const { tier } = req.body;
         if (!['free', 'lite', 'pro'].includes(tier)) {
             console.log('DEBUG - Invalid tier value:', tier);
             return res.status(400).json({ message: 'Invalid tier value. Must be free, lite, or pro.' });
         }
-        
+
         // Log the current tier before updating
         import('../models/User.js').then(({ default: User }) => {
             User.findById(req.user._id)
@@ -74,7 +80,7 @@ router.put('/tier-debug', protect, (req, res) => {
                     if (user) {
                         console.log('DEBUG - Current tier:', user.tier);
                         console.log('DEBUG - Updating to tier:', tier);
-                        
+
                         // Update user tier
                         user.tier = tier;
                         user.save()
