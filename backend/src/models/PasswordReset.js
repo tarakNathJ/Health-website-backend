@@ -17,7 +17,7 @@ const passwordResetSchema = new mongoose.Schema(
             required: true,
             default: function () {
                 // Token expires in 1 hour
-                return new Date(Date.now() + 3600000);
+                return new Date(Date.now() +  7200000);
             }
         },
         used: {

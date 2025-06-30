@@ -6,6 +6,7 @@ import config from './config/config.js';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import passwordRoutes from './routes/passwordRoutes.js';
+import paymentRouter from './routes/paymentRouter.js';
 
 // Load environment variables
 dotenv.config();
@@ -28,21 +29,22 @@ if (config.nodeEnv === 'development') {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/password', passwordRoutes);
+app.use('/api/payment', paymentRouter);
 
 // Base route
 app.get('/', (req, res) => {
     res.send('HealthConnect API is running...');
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    res.status(statusCode);
-    res.json({
-        message: err.message,
-        stack: config.nodeEnv === 'production' ? null : err.stack,
-    });
-});
+// // Error handling middleware
+// app.use((err, req, res, next) => {
+//     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+//     res.status(statusCode);
+//     res.json({
+//         message: err.message,
+//         stack: config.nodeEnv === 'production' ? null : err.stack,
+//     });
+// });
 
 // Start server
 app.listen(PORT, () => {

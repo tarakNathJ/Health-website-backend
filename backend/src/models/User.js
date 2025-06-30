@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
         tier: {
             type: String,
             enum: ['free', 'lite', 'pro'],
-            default: 'free'
+            
         },
         isAdmin: {
             type: Boolean,

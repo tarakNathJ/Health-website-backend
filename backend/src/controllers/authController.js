@@ -30,6 +30,7 @@ export const registerUser = async (req, res) => {
             name,
             email,
             password,
+            tier: 'free', // Default tier
         });
 
         if (user) {
