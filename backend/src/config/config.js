@@ -11,6 +11,8 @@ const config = {
     jwtExpiresIn: '7d',
     razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'your_razorpay_key_id',
     razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || 'your_razorpay_key_secret',
+    googleGenAIKey: process.env.GOOGLE_GENAI_API_KEY  || 'your_google_genai_api_key',
+    googleGenAIModel: process.env.GOOGLE_GENAI_MODEL || 'gemini-1.5-flash',
 
 
 };

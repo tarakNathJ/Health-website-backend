@@ -6,8 +6,17 @@ import {
     getUserProfile,
     updateUserProfile,
     updateUserTier,
-    deleteUserAccount
+    deleteUserAccount,
+    registerDoctor,
+    loginDoctor,
+    messageForDoctor,
+    getAllmessage ,
+    getAllDoctor ,
+    getDoctorProfile,
+    cancelSubscription
 } from '../controllers/authController.js';
+
+import {BarcodeSearchResult} from '../controllers/foodDetails.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -56,6 +65,7 @@ router.put('/tier', protect, updateUserTier);
 // @desc    Delete user account
 // @access  Private
 router.delete('/account', protect, deleteUserAccount);
+router.delete('/cancelSubscription',protect,cancelSubscription);
 
 // @route   PUT /api/auth/tier-debug
 // @desc    Debug endpoint for tier updates
@@ -117,5 +127,13 @@ router.put('/tier-debug', protect, (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+router.post('/registerDoctor',registerDoctor);
+router.post('/loginDoctor',loginDoctor);
+router.post('/messageForDoctor',protect,messageForDoctor);
+router.post('/getAllmessage',getAllmessage);
+router.get('/getAlldoctor',getAllDoctor);
+router.post('/getDoctorProfile',getDoctorProfile);
+router.post('/BarcodeSearchResult',BarcodeSearchResult);
 
 export default router; 
